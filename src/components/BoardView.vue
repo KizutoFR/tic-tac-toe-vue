@@ -3,15 +3,16 @@
         <h2 v-if="winner">Winner: {{winner}} 😎</h2>
         <h2 v-else>Players Move : {{player}}</h2>
         <button @click="reset" class="btn btn-success mb-3">Reset</button>
-
-         <div v-for="x in 3" :key="x" class="row">
+        
+        <div v-for="x in 3" :key="x" class="row">
             <button v-for="y in 3" :key="y" class="square" @click="move(x,y)">
-               {{ squares[x-1][y-1] }} 
-            
+                {{ squares[x-1][y-1] }} 
+                
             </button>      
         </div>
-
+        
         <h2 class="mt-5">History</h2>
+        <button @click="resetHistory" class="btn btn-success mb-3">Reset</button>
         <div v-for="(game,idx) in history" :key="idx">
             Game {{idx + 1}}: {{ game }} won
         </div>
@@ -20,6 +21,7 @@
 </template>
 
 <script lang="ts">
+import router from '@/router'
 import { defineComponent, computed, ref, watch, onMounted } from 'vue'
 
 export default defineComponent({
@@ -88,16 +90,21 @@ export default defineComponent({
         })
 
         onMounted(()=>{
-            if( localStorage.getItem('history') === null){
-                console.log('null: ', localStorage.getItem('history'));
-                history.value = ['']
-            } else{
+            if( localStorage.getItem('history') != null){
                 console.log('not null',localStorage.getItem('history'));
-                // history.value = JSON.parse(localStorage.getItem('history'))
+                // let test : any 
+                // test= JSON.parse(localStorage.getItem('history'))
+                // history.value = JSON.parse(localStorage.getItem('history'))      
+                history.value=(JSON.parse(localStorage.getItem('history')!))         
             }
         })
 
-        return { winner, player, squares, move, reset , history}
+        const resetHistory = () => {
+            localStorage.removeItem('history');
+            window.location.reload();
+        }
+
+        return { winner, player, squares, move, reset , history, resetHistory}
     },
 })
 </script>
